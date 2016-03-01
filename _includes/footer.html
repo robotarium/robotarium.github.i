@@ -1,0 +1,32 @@
+<footer class="site-footer">
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading">{{ site.title }} &copy; 2016 &nbsp; 
+		{% if site.twitter_username %} 
+		<a href="https://twitter.com/{{ site.twitter_username }}"><i class="fa fa-twitter fa-lg"></i></a>
+		{% endif %}
+		{% if site.youtube_username %}
+		<a href="https://youtube.com/channel/{{ site.youtube_username }}"><i class="fa fa-youtube fa-lg"></i></a>
+		{% endif %}
+		{% if site.github_username %}
+	  	<a href="https://github.com/{{ site.github_username }}"><i class="fa fa-github fa-lg"></i></a>
+		{% endif %}
+	</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+
+      </div>
+
+      <div class="footer-col  footer-col-2">
+
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">{{ site.description }}</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>

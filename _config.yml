@@ -1,0 +1,11 @@
+# Site settings
+title: The Robotarium Project
+description: > # this means to ignore newlines until "baseurl:"
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://www.robotarium.org" # the base hostname & protocol for your site
+twitter_username: robotariumorg
+youtube_username: UC95etX3555MyNyOjoWHKFXg
+github_username:  robotarium
+
+# Build settings
+markdown: kramdown
