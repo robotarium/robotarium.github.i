@@ -4,7 +4,7 @@ title: Get Started!
 permalink: /get_started/
 ---
 
-Currently the robotarium supports MATLAB scripting to specify robot dynamics. Below we walk through a simple example which implements a cannonical algorithm in network control theory known as the consensus protocol. Download the example files [here](https://github.com/robotarium/robotarium-matlab-simulator).
+Currently the robotarium supports MATLAB scripting to specify robot dynamics. Below we walk through a simple example which implements a cannonical algorithm in network control theory known as the consensus protocol. Download the example files [here](pathtofiles.com).
 
 The consensus protocol in code
 ==============================
