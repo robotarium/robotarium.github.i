@@ -6,7 +6,8 @@ date:   2016-03-29
 
 Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium's MATLAB API.  Additionally, this document contains experimental data from the Robotarium's robots. 
 
-#Problem Statement
+Problem Statement
+=================
 
 Consider a group of $$N$$ agents, where we define the state of each agent as $$x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N$$.  This particular algorithm models each agent with the single-integrator dynamics
 
@@ -21,7 +22,8 @@ where $$u_{i} \in \mathbb{R}^{2}$$ is the control input to agent $$i$$.  The goa
 
 where $$\text{car}(E)/2$$ represents the number of edges in an undirected graph (i.e., $$(i, j), (j, i) \in E$$).  Intuitively, (\ref{eq:rigidity}) implies the removal of three degrees of freedom, which is required for translational independence in $$\mathbb{R}^{2}$$.
 
-#Solution
+Solution
+========
 
 The proposed algorithm utilizes the edge tension energy described in [[4](ji)].  The total edge tension energy of the system may be written as 
 
@@ -49,7 +51,8 @@ substituting this result into the agent's dynamics yields
 
 which is a decentralized formation control law.
 
-#Implementation
+Implementation
+==============
 
 Using the previously defined algorithm and the Robotarium's provided MATLAB interface, we implemented the formation control algorithm described by (\ref{eq:formation-control-law}).  The code snippet below demonstrates the transfer of (\ref{eq:formation-control-law}) into the Robotarium's MATLAB API.
 
@@ -79,7 +82,8 @@ for i = 1:N
 end
 {% endhighlight %}
 
-#Deployment
+Deployment
+==========
 
 We deployed this algorithm onto the Robotarium with $$N = 6$$ agents and the formation specification 
 <div>
@@ -101,7 +105,8 @@ where each index $$d_{ij}$$ is the distance constraint placed on edges $$(i,j)$$
 ![](/assets/formationControl.png)
 **Fig 1. Physical robots' trajectories and communication topology ("Edge" in the legend) during the deployment of the decentralized formation control algorithm onto the Robotarium**
 
-##References
+References
+==========
 
 <a name="olfati-saber"></a>
 [1] R. Olfati-Saber and R. M. Murray, “Distributed structural stabilization

@@ -5,8 +5,8 @@
     <description></description>
     <link>http://www.robotarium.org/</link>
     <atom:link href="http://www.robotarium.org/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 29 Mar 2016 13:58:17 -0400</pubDate>
-    <lastBuildDate>Tue, 29 Mar 2016 13:58:17 -0400</lastBuildDate>
+    <pubDate>Tue, 29 Mar 2016 14:03:04 -0400</pubDate>
+    <lastBuildDate>Tue, 29 Mar 2016 14:03:04 -0400</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -26,6 +26,7 @@ where &lt;script type=&quot;math/tex&quot;&gt;u_{i} \in \mathbb{R}^{2}&lt;/scrip
 &lt;/div&gt;
 
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;/h1&gt;
+
 &lt;p&gt;A common solution to the rendezvous problem is to let $u_{i}$ be defined using the local interaction rule (e.g., as in [&lt;a href=&quot;#jadbabaie&quot;&gt;1&lt;/a&gt;]).
 &lt;script type=&quot;math/tex&quot;&gt;u_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})&lt;/script&gt;
 yielding the node-level dynamics&lt;/p&gt;
@@ -74,6 +75,7 @@ where &lt;script type=&quot;math/tex&quot;&gt;x_{j}(0)&lt;/script&gt; is the ini
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1 id=&quot;deployment&quot;&gt;Deployment&lt;/h1&gt;
+
 &lt;p&gt;For the experiment, we selected &lt;script type=&quot;math/tex&quot;&gt;N = 6&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;G = C_{6}&lt;/script&gt; (i.e., an undirected cycle graph containing 6 agents).  This choice for &lt;script type=&quot;math/tex&quot;&gt;G&lt;/script&gt; ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in &lt;a href=&quot;#consensus-data&quot;&gt;Figure 1&lt;/a&gt;.  Note that, due to the physical size of the robots, the agents did not reach the same point.&lt;/p&gt;
 
 &lt;p&gt;&lt;a name=&quot;consensus-data&quot;&gt;&lt;/a&gt;
@@ -194,7 +196,7 @@ $$
 &lt;img src=&quot;/assets/formationControl.png&quot; alt=&quot;&quot; /&gt;
 &lt;strong&gt;Fig 1. Physical robots’ trajectories and communication topology (“Edge” in the legend) during the deployment of the decentralized formation control algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
 
 &lt;p&gt;&lt;a name=&quot;olfati-saber&quot;&gt;&lt;/a&gt;
 [1] R. Olfati-Saber and R. M. Murray, “Distributed structural stabilization

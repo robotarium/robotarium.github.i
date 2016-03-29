@@ -104,6 +104,7 @@ where <script type="math/tex">u_{i} \in \mathbb{R}^{2}</script> is the control i
 </div>
 
 <h1 id="solution">Solution</h1>
+
 <p>A common solution to the rendezvous problem is to let $u_{i}$ be defined using the local interaction rule (e.g., as in [<a href="#jadbabaie">1</a>]).
 <script type="math/tex">u_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})</script>
 yielding the node-level dynamics</p>
@@ -152,6 +153,7 @@ where <script type="math/tex">x_{j}(0)</script> is the initial condition of agen
 <span class="k">end</span></code></pre></div>
 
 <h1 id="deployment">Deployment</h1>
+
 <p>For the experiment, we selected <script type="math/tex">N = 6</script> and <script type="math/tex">G = C_{6}</script> (i.e., an undirected cycle graph containing 6 agents).  This choice for <script type="math/tex">G</script> ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in <a href="#consensus-data">Figure 1</a>.  Note that, due to the physical size of the robots, the agents did not reach the same point.</p>
 
 <p><a name="consensus-data"></a>
