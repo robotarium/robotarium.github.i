@@ -12,4 +12,4 @@ The Robotarium project's objective is to make an online, swarm robotics platform
 
 How do I get involved?
 ======================
-The Robotarium is now open for business! Currently the Robotarium is in closed alpha. In order to be a tester contact [Daniel Pickem](mailto:daniel.pickem@gatech.edu) or [Magnus Egerstedt](mailto:magnus@gatech.edu). You can get started right away using the Robotarium simulator provided [here](/get_started/).
+The Robotarium is now open for business! Currently the Robotarium is in closed alpha. In order to be a tester contact [Daniel Pickem](mailto:daniel.pickem@gatech.edu) or [Magnus Egerstedt](mailto:magnus@gatech.edu). You can get started right away using the Robotarium simulator provided [here](/get_started/). We have also developed a set of well documented [examples](/examples/) which currently run on the robotarium which you can review.

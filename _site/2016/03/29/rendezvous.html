@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!--Mathjax Support & Configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+      extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
+      TeX: {
+        extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+      }
+    });
+    </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+    <title>Rendezvous</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="canonical" href="http://www.robotarium.org/2016/03/29/rendezvous.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/"><img src="/assets/robotarium_header.png"></a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <!--<div class="trigger">
+        
+          
+          <a class="page-link" href="/contributor-agreement/">How to Contribute</a>
+          
+        
+          
+          <a class="page-link" href="/examples/">Algorithm Examples</a>
+          
+        
+          
+        
+          
+          <a class="page-link" href="/get_started/">Get Started!</a>
+          
+        
+          
+        
+          
+        
+          
+        
+	-->
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Rendezvous</h1>
+  </header>
+
+  <article class="post-content">
+    <p>Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.</p>
+
+<h1 id="problem-statement">Problem Statement</h1>
+
+<p>Consider a group of <script type="math/tex">N</script> agents, where we define the state of each agent as <script type="math/tex">x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N</script>.  This particular algorithm models each agent with the single-integrator dynamics
+<script type="math/tex">\dot{x}_{i} = u_{i}</script>
+where <script type="math/tex">u_{i} \in \mathbb{R}^{2}</script> is the control input to agent <script type="math/tex">i</script>.  The rendezvous problem requires the design of a control input <script type="math/tex">u_{i}</script> such that</p>
+<div>
+\begin{equation}
+    \lim_{t \to \infty} (x_{i} - x_{j}) = 0, ~ \forall ~ i,j = 1,\ldots,N
+    \label{eq:solution}
+\end{equation}
+</div>
+
+<h1 id="solution">Solution</h1>
+<p>A common solution to the rendezvous problem is to let $u_{i}$ be defined using the local interaction rule (e.g., as in [<a href="#jadbabaie">1</a>]).
+<script type="math/tex">u_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})</script>
+yielding the node-level dynamics</p>
+<div>
+\begin{equation}
+    \dot{x}_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})
+    \label{eq:node-level-dynamics}
+\end{equation}
+</div>
+
+<p>where <script type="math/tex">N_{i}</script> represents the neighbors of agent <script type="math/tex">i</script> induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph <script type="math/tex">G = (V, E)</script> where the following condition holds 
+<script type="math/tex">j \in N_{i} \iff (i, j), (j, i) \in E</script>
+Then, the node-level dynamics may be re-written as ensemble-level dynamics by combining the agents’ states together into the vector
+<script type="math/tex">x = \left[ x_{1,1} ~ x_{2,1} \ldots ~ x_{N,1} ~ x_{1, 2} ~ x_{2, 2} ~ \ldots ~ x_{N, 2} \right]^{T}</script>
+yielding the ensemble-level dynamics 
+<script type="math/tex">\dot{x} = -(I \otimes L)x</script>
+where <script type="math/tex">L</script> is the graph Laplacian to the graph <script type="math/tex">G</script>, and <script type="math/tex">I</script> is an identity matrix of the appropriate dimension.  Note that <script type="math/tex">x_{i, j}</script> refers to the <script type="math/tex">j</script>th state variable of agent <script type="math/tex">x_{i} \in \mathbb{R}^{2}</script>.  This algorithm is known as the consensus algorithm.  Using the properties of <script type="math/tex">L</script>, we can also show each agent’s final position is given by
+<script type="math/tex">\lim_{t \to \infty} x_{i}(t) = \dfrac{1}{N} \sum_{j=1}^{N} x_{j}(0), ~ \forall ~ i = 1,\ldots,N</script>
+where <script type="math/tex">x_{j}(0)</script> is the initial condition of agent <script type="math/tex">j</script>.  This result solves the problem stated in(\ref{eq:solution}).  Interestingly, the agents always meet at the average of the initial conditions.  For relevant properties of the graph Laplacian, refer to sources such as [<a href="#godsil">2</a>].</p>
+
+<h1 id="implementation">Implementation</h1>
+
+<p>Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the consensus algorithm in (\ref{eq:node-level-dynamics}).  The code snippet below demonstrates the transfer of the consensus algorithm into the Robotarium’s MATLAB API.</p>
+
+<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+
+    <span class="c">% Initialize velocity to zero for each agent.  This allows us to sum</span>
+    <span class="c">% over agent i&#39;s neighbors</span>
+    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+
+    <span class="c">% Get the topological neighbors of agent i based on the graph</span>
+    <span class="c">% Laplacian L</span>
+    <span class="n">neighbors</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
+
+    <span class="c">% Iterate through agent i&#39;s neighbors</span>
+    <span class="k">for</span> <span class="nb">j</span> <span class="p">=</span> <span class="n">neighbors</span>
+
+        <span class="c">%%% CONSENSUS %%%</span>
+
+        <span class="c">% For each neighbor, calculate appropriate consensus term and</span>
+        <span class="c">%add it to the total velocity</span>
+        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
+
+        <span class="c">%%% END CONSENSUS %%%</span>
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<h1 id="deployment">Deployment</h1>
+<p>For the experiment, we selected <script type="math/tex">N = 6</script> and <script type="math/tex">G = C_{6}</script> (i.e., an undirected cycle graph containing 6 agents).  This choice for <script type="math/tex">G</script> ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in <a href="#consensus-data">Figure 1</a>.  Note that, due to the physical size of the robots, the agents did not reach the same point.</p>
+
+<p><a name="consensus-data"></a>
+<img src="/assets/rendezvous.png" alt="" />
+<strong>Fig 1. Physical robots’ trajectories during the deployment of the consensus algorithm onto the Robotarium</strong></p>
+
+<h1 id="references">References</h1>
+
+<p><a name="jadbabaie"></a>
+[1] A. Jadbabaie, J. Lin, and A. S. Morse, “Coordination of groups of mobile
+autonomous agents using nearest neighbor rules,” <em>IEEE Trans. Autom. Control</em>, vol. 48, no. 6, pp. 988–1001, Jun. 2003</p>
+
+<p><a name="godsil"></a>
+[2] C. Godsil and G. Royle, <em>Algebraic Graph Theory</em>. Berlin, Germany:
+Springer, 2001</p>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading">The Robotarium Project &copy; 2016 &nbsp; 
+		 
+		<a href="https://twitter.com/robotariumorg"><i class="fa fa-twitter fa-lg"></i></a>
+		
+		
+		<a href="https://youtube.com/channel/UC95etX3555MyNyOjoWHKFXg"><i class="fa fa-youtube fa-lg"></i></a>
+		
+		
+	  	<a href="https://github.com/robotarium"><i class="fa fa-github fa-lg"></i></a>
+		
+	</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+
+      </div>
+
+      <div class="footer-col  footer-col-2">
+
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text"></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!--Mathjax Support & Configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+      extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
+      TeX: {
+        extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+      }
+    });
+    </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+    <title>Formation Control</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="canonical" href="http://www.robotarium.org/2016/03/29/formation-control.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/"><img src="/assets/robotarium_header.png"></a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <!--<div class="trigger">
+        
+          
+          <a class="page-link" href="/contributor-agreement/">How to Contribute</a>
+          
+        
+          
+          <a class="page-link" href="/examples/">Algorithm Examples</a>
+          
+        
+          
+        
+          
+          <a class="page-link" href="/get_started/">Get Started!</a>
+          
+        
+          
+        
+          
+        
+          
+        
+	-->
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Formation Control</h1>
+  </header>
+
+  <article class="post-content">
+    <p>Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.</p>
+
+<h1 id="problem-statement">Problem Statement</h1>
+
+<p>Consider a group of <script type="math/tex">N</script> agents, where we define the state of each agent as <script type="math/tex">x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N</script>.  This particular algorithm models each agent with the single-integrator dynamics</p>
+
+<script type="math/tex; mode=display">\dot{x}_{i} = u_{i}</script>
+
+<p>where <script type="math/tex">u_{i} \in \mathbb{R}^{2}</script> is the control input to agent <script type="math/tex">i</script>.  The goal of formation control is to drive the agents to a translationally independent formation that satisfies a set of given constraints.  For this particular problem, the static communication topology is given by an undirected graph <script type="math/tex">G = (V, E)</script> and a function <script type="math/tex">d : E \to \mathbb{R}^{2}</script> that models the desired inter-agent distances.  To achieve a particular formation specified by <script type="math/tex">E</script> and <script type="math/tex">d</script>, the communication topology enforced by <script type="math/tex">E</script> must be rigid, a concept discussed in [<a href="#olfati-saber">1</a>], [<a href="#beard">2</a>], and [<a href="#eren">3</a>].  For <script type="math/tex">\mathbb{R}^{2}</script>, the rigidity requirements to ensure a translationally independent formation are</p>
+
+<p>\begin{equation}
+\dfrac{\text{car}(E)}{2} = 2N - 3
+\label{eq:rigidity}
+\end{equation}</p>
+
+<p>where <script type="math/tex">\text{car}(E)/2</script> represents the number of edges in an undirected graph (i.e., <script type="math/tex">(i, j), (j, i) \in E</script>).  Intuitively, (\ref{eq:rigidity}) implies the removal of three degrees of freedom, which is required for translational independence in <script type="math/tex">\mathbb{R}^{2}</script>.</p>
+
+<h1 id="solution">Solution</h1>
+
+<p>The proposed algorithm utilizes the edge tension energy described in [<a href="ji">4</a>].  The total edge tension energy of the system may be written as</p>
+
+<script type="math/tex; mode=display">w(x) = \dfrac{1}{2}\sum_{i = 1}^{N}\sum_{j \in N_{i}} w_{ij}(x)</script>
+
+<p>where <script type="math/tex">N_{i}</script> is the neighborhood set to agent <script type="math/tex">i</script> induced by the graph topology <script type="math/tex">G</script>.  [<a href="ji">4</a>] shows that the control law</p>
+
+<script type="math/tex; mode=display">u_{i} = -\dfrac{\partial w(x)}{\partial x_{i}}</script>
+
+<p>can be used to drive the agents to the desired configuration, with the proper choice of <script type="math/tex">w_{ij}(x)</script>.  This control law can be seen as a gradient descent on the edge tension energy of the agents.  Let <script type="math/tex">w_{ij}</script> be defined as</p>
+
+<script type="math/tex; mode=display">w_{ij}(x) = \dfrac{\alpha}{4}(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})^{2}</script>
+
+<p>where <script type="math/tex">d_{ij} \in \mathbb{R}^{2}</script> is the desired distance between two agents defined by <script type="math/tex">d</script>, and <script type="math/tex">\alpha \in \mathbb{R}^{+}</script> is a gain.  The gradient of this function is</p>
+
+<script type="math/tex; mode=display">\dfrac{\partial w(x)}{\partial x_{i}} = -\sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})</script>
+
+<p>substituting this result into the agent’s dynamics yields</p>
+<div>
+\begin{equation}
+\dot{x}_i = \sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})
+\label{eq:formation-control-law}
+\end{equation}
+</div>
+
+<p>which is a decentralized formation control law.</p>
+
+<h1 id="implementation">Implementation</h1>
+
+<p>Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the formation control algorithm described by (\ref{eq:formation-control-law}).  The code snippet below demonstrates the transfer of (\ref{eq:formation-control-law}) into the Robotarium’s MATLAB API.</p>
+
+<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c">%Calculate single integrator control inputs using edge-energy consensus</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+
+    <span class="c">% Initialize velocity to zero for each agent.  This allows us to sum</span>
+    <span class="c">% over agent i&#39;s neighbors</span>
+    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+
+    <span class="c">% Get the topological neighbors of agent i from the communication</span>
+    <span class="c">% topology</span>
+    <span class="k">for</span> <span class="nb">j</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+
+        <span class="c">% For each neighbor, calculate appropriate formation control term and</span>
+        <span class="c">% add it to the total velocity</span>
+
+        <span class="c">%%% FORMATION CONTROL %%%</span>
+
+        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="c">...</span>
+        <span class="n">formationControlGain</span><span class="o">*</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">))</span>^<span class="mi">2</span> <span class="o">-</span> <span class="n">weights</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span>^<span class="mi">2</span><span class="p">)</span> <span class="c">... </span>
+        <span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
+
+        <span class="c">%%% END FORMATION CONTROL %%%</span>
+    <span class="k">end</span> 
+<span class="k">end</span></code></pre></div>
+
+<h1 id="deployment">Deployment</h1>
+
+<p>We deployed this algorithm onto the Robotarium with <script type="math/tex">N = 6</script> agents and the formation specification</p>
+<div>
+$$
+d = 
+\begin{bmatrix} 
+0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.4472 \\
+0.2 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0 \\
+0 &amp; 0.2 &amp; 0 &amp; 0.4472 &amp; 0 &amp; 0.2 \\
+0.2 &amp; 0 &amp; 0.4472 &amp; 0 &amp; 0.2 &amp; 0 \\
+0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.2 \\
+0.4472 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0
+\end{bmatrix}
+$$
+</div>
+<p>where each index <script type="math/tex">d_{ij}</script> is the distance constraint placed on edges <script type="math/tex">(i,j)</script> and <script type="math/tex">(j,i)</script>.  Note that <script type="math/tex">d</script> induces <script type="math/tex">9</script> edges, which ensures rigidity by (\ref{eq:rigidity}).  <a href="#fc-data">Figure 1</a> displays the communication topology and the trajectories of the robots during the experiment.  Note that the agents achieve the desired rectangular formation.  The erratic motion in some agents’ trajectories stems from the rigidity of the formation, which restricts the agents’ movements.</p>
+
+<p><a name="fc-data"></a>
+<img src="/assets/formationControl.png" alt="" />
+<strong>Fig 1. Physical robots’ trajectories and communication topology (“Edge” in the legend) during the deployment of the decentralized formation control algorithm onto the Robotarium</strong></p>
+
+<h2 id="references">References</h2>
+
+<p><a name="olfati-saber"></a>
+[1] R. Olfati-Saber and R. M. Murray, “Distributed structural stabilization
+and tracking for formations of dynamic multi-agents,” <em>Proc. 41st IEEE
+Conf. Decision Control</em>, vol. 1, pp. 209–215, Dec. 2002.</p>
+
+<p><a name="beard"></a>
+[2] R. W. Beard, J. R. Lawton, and F. Y. Hadaegh, “A coordination architecture
+for spacecraft formation control,” <em>IEEE Trans. Control Syst. Technol.</em>,
+vol. 9, no. 6, pp. 777–790, Nov. 2001</p>
+
+<p><a name="eren"></a>
+[3] T. Eren, P. Belhumeur, B. Anderson, and A. Morse, “A framework for
+maintaining formations based on rigidity,” in <em>Proc. 2002 IFAC Congr.</em>,
+pp. 2752–2757.</p>
+
+<p><a name="ji"></a>
+[4] M. Ji and M. Egerstedt. Distributed Coordination Control of Multi-Agent Systems While Preserving Connectedness. <em>IEEE Transactions on Robotics</em>, Vol. 23, No. 4, pp. 693-703, Aug. 2007.</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading">The Robotarium Project &copy; 2016 &nbsp; 
+		 
+		<a href="https://twitter.com/robotariumorg"><i class="fa fa-twitter fa-lg"></i></a>
+		
+		
+		<a href="https://youtube.com/channel/UC95etX3555MyNyOjoWHKFXg"><i class="fa fa-youtube fa-lg"></i></a>
+		
+		
+	  	<a href="https://github.com/robotarium"><i class="fa fa-github fa-lg"></i></a>
+		
+	</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+
+      </div>
+
+      <div class="footer-col  footer-col-2">
+
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text"></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

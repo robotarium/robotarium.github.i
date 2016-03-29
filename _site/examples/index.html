@@ -6,16 +6,30 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
-    <!--Mathjax Support -->
+    <!--Mathjax Support & Configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+      extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
+      TeX: {
+        extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+      }
+    });
+    </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
-    <title>Welcome to Jekyll!</title>
+    <title>Algorithm Examples</title>
     <meta name="description" content="">
 
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-    <link rel="canonical" href="http://www.robotarium.org/jekyll/update/2016/02/29/welcome-to-jekyll.html">
+    <link rel="canonical" href="http://www.robotarium.org/examples/">
 </head>
 
 
@@ -39,6 +53,10 @@
         
           
           <a class="page-link" href="/contributor-agreement/">How to Contribute</a>
+          
+        
+          
+          <a class="page-link" href="/examples/">Algorithm Examples</a>
           
         
           
@@ -67,27 +85,34 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Welcome to Jekyll!</h1>
-    <p class="post-meta">Feb 29, 2016</p>
+    <h1 class="post-title">Algorithm Examples</h1>
   </header>
 
   <article class="post-content">
-    <p>You’ll find this post in your <code>_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code>jekyll serve --watch</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
-
-<p>To add new posts, simply add a file in the <code>_posts</code> directory that follows the convention <code>YYYY-MM-DD-name-of-post.ext</code> and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
-
-<p>Jekyll also offers powerful support for code snippets:</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-<span class="c1">#=&gt; prints &#39;Hi, Tom&#39; to STDOUT.</span></code></pre></div>
-
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://github.com/jekyll/jekyll-help">Jekyll’s dedicated Help repository</a>.</p>
+    <p>Some cannonical swarm algorithms are outlined in the articles below at length.  They include the mathematical derivation, code implementation, and resulting video of the robotarium in action.  These are intended to act as a blueprint to develop your own algorithms.</p>
 
 
   </article>
+
+  
+  <article>
+    <a href="/2016/03/29/rendezvous.html">
+       Rendezvous
+    </a>
+    <p>Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium&#8217;s MATLAB API.  Additionally, this document contains experimental data from the Robotarium&#8217;s robots.</p>
+
+
+  </article>
+  
+  <article>
+    <a href="/2016/03/29/formation-control.html">
+       Formation Control
+    </a>
+    <p>Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium&#8217;s MATLAB API.  Additionally, this document contains experimental data from the Robotarium&#8217;s robots.</p>
+
+
+  </article>
+  
 
 </div>
 

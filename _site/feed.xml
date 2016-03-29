@@ -5,35 +5,220 @@
     <description></description>
     <link>http://www.robotarium.org/</link>
     <atom:link href="http://www.robotarium.org/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 29 Mar 2016 11:12:41 -0400</pubDate>
-    <lastBuildDate>Tue, 29 Mar 2016 11:12:41 -0400</lastBuildDate>
+    <pubDate>Tue, 29 Mar 2016 13:58:17 -0400</pubDate>
+    <lastBuildDate>Tue, 29 Mar 2016 13:58:17 -0400</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
-        <title>Welcome to Jekyll!</title>
-        <description>&lt;p&gt;You’ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code&gt;jekyll serve --watch&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+        <title>Rendezvous</title>
+        <description>&lt;p&gt;Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.&lt;/p&gt;
 
-&lt;p&gt;To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+&lt;h1 id=&quot;problem-statement&quot;&gt;Problem Statement&lt;/h1&gt;
 
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+&lt;p&gt;Consider a group of &lt;script type=&quot;math/tex&quot;&gt;N&lt;/script&gt; agents, where we define the state of each agent as &lt;script type=&quot;math/tex&quot;&gt;x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N&lt;/script&gt;.  This particular algorithm models each agent with the single-integrator dynamics
+&lt;script type=&quot;math/tex&quot;&gt;\dot{x}_{i} = u_{i}&lt;/script&gt;
+where &lt;script type=&quot;math/tex&quot;&gt;u_{i} \in \mathbb{R}^{2}&lt;/script&gt; is the control input to agent &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;.  The rendezvous problem requires the design of a control input &lt;script type=&quot;math/tex&quot;&gt;u_{i}&lt;/script&gt; such that&lt;/p&gt;
+&lt;div&gt;
+\begin{equation}
+    \lim_{t \to \infty} (x_{i} - x_{j}) = 0, ~ \forall ~ i,j = 1,\ldots,N
+    \label{eq:solution}
+\end{equation}
+&lt;/div&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Tom&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;/h1&gt;
+&lt;p&gt;A common solution to the rendezvous problem is to let $u_{i}$ be defined using the local interaction rule (e.g., as in [&lt;a href=&quot;#jadbabaie&quot;&gt;1&lt;/a&gt;]).
+&lt;script type=&quot;math/tex&quot;&gt;u_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})&lt;/script&gt;
+yielding the node-level dynamics&lt;/p&gt;
+&lt;div&gt;
+\begin{equation}
+    \dot{x}_{i} = \sum_{j \in N_{i}} (x_{j} - x_{i})
+    \label{eq:node-level-dynamics}
+\end{equation}
+&lt;/div&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://github.com/jekyll/jekyll-help&quot;&gt;Jekyll’s dedicated Help repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;N_{i}&lt;/script&gt; represents the neighbors of agent &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt; induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph &lt;script type=&quot;math/tex&quot;&gt;G = (V, E)&lt;/script&gt; where the following condition holds 
+&lt;script type=&quot;math/tex&quot;&gt;j \in N_{i} \iff (i, j), (j, i) \in E&lt;/script&gt;
+Then, the node-level dynamics may be re-written as ensemble-level dynamics by combining the agents’ states together into the vector
+&lt;script type=&quot;math/tex&quot;&gt;x = \left[ x_{1,1} ~ x_{2,1} \ldots ~ x_{N,1} ~ x_{1, 2} ~ x_{2, 2} ~ \ldots ~ x_{N, 2} \right]^{T}&lt;/script&gt;
+yielding the ensemble-level dynamics 
+&lt;script type=&quot;math/tex&quot;&gt;\dot{x} = -(I \otimes L)x&lt;/script&gt;
+where &lt;script type=&quot;math/tex&quot;&gt;L&lt;/script&gt; is the graph Laplacian to the graph &lt;script type=&quot;math/tex&quot;&gt;G&lt;/script&gt;, and &lt;script type=&quot;math/tex&quot;&gt;I&lt;/script&gt; is an identity matrix of the appropriate dimension.  Note that &lt;script type=&quot;math/tex&quot;&gt;x_{i, j}&lt;/script&gt; refers to the &lt;script type=&quot;math/tex&quot;&gt;j&lt;/script&gt;th state variable of agent &lt;script type=&quot;math/tex&quot;&gt;x_{i} \in \mathbb{R}^{2}&lt;/script&gt;.  This algorithm is known as the consensus algorithm.  Using the properties of &lt;script type=&quot;math/tex&quot;&gt;L&lt;/script&gt;, we can also show each agent’s final position is given by
+&lt;script type=&quot;math/tex&quot;&gt;\lim_{t \to \infty} x_{i}(t) = \dfrac{1}{N} \sum_{j=1}^{N} x_{j}(0), ~ \forall ~ i = 1,\ldots,N&lt;/script&gt;
+where &lt;script type=&quot;math/tex&quot;&gt;x_{j}(0)&lt;/script&gt; is the initial condition of agent &lt;script type=&quot;math/tex&quot;&gt;j&lt;/script&gt;.  This result solves the problem stated in(\ref{eq:solution}).  Interestingly, the agents always meet at the average of the initial conditions.  For relevant properties of the graph Laplacian, refer to sources such as [&lt;a href=&quot;#godsil&quot;&gt;2&lt;/a&gt;].&lt;/p&gt;
+
+&lt;h1 id=&quot;implementation&quot;&gt;Implementation&lt;/h1&gt;
+
+&lt;p&gt;Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the consensus algorithm in (\ref{eq:node-level-dynamics}).  The code snippet below demonstrates the transfer of the consensus algorithm into the Robotarium’s MATLAB API.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;% Initialize velocity to zero for each agent.  This allows us to sum&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;% over agent i&amp;#39;s neighbors&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;% Get the topological neighbors of agent i based on the graph&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;% Laplacian L&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;neighbors&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getTopNeighbors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;% Iterate through agent i&amp;#39;s neighbors&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;neighbors&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;%%% CONSENSUS %%%&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;% For each neighbor, calculate appropriate consensus term and&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;%add it to the total velocity&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;%%% END CONSENSUS %%%&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;deployment&quot;&gt;Deployment&lt;/h1&gt;
+&lt;p&gt;For the experiment, we selected &lt;script type=&quot;math/tex&quot;&gt;N = 6&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;G = C_{6}&lt;/script&gt; (i.e., an undirected cycle graph containing 6 agents).  This choice for &lt;script type=&quot;math/tex&quot;&gt;G&lt;/script&gt; ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in &lt;a href=&quot;#consensus-data&quot;&gt;Figure 1&lt;/a&gt;.  Note that, due to the physical size of the robots, the agents did not reach the same point.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;consensus-data&quot;&gt;&lt;/a&gt;
+&lt;img src=&quot;/assets/rendezvous.png&quot; alt=&quot;&quot; /&gt;
+&lt;strong&gt;Fig 1. Physical robots’ trajectories during the deployment of the consensus algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
+
+&lt;p&gt;&lt;a name=&quot;jadbabaie&quot;&gt;&lt;/a&gt;
+[1] A. Jadbabaie, J. Lin, and A. S. Morse, “Coordination of groups of mobile
+autonomous agents using nearest neighbor rules,” &lt;em&gt;IEEE Trans. Autom. Control&lt;/em&gt;, vol. 48, no. 6, pp. 988–1001, Jun. 2003&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;godsil&quot;&gt;&lt;/a&gt;
+[2] C. Godsil and G. Royle, &lt;em&gt;Algebraic Graph Theory&lt;/em&gt;. Berlin, Germany:
+Springer, 2001&lt;/p&gt;
+</description>
+        <pubDate>Tue, 29 Mar 2016 00:00:00 -0400</pubDate>
+        <link>http://www.robotarium.org/2016/03/29/rendezvous.html</link>
+        <guid isPermaLink="true">http://www.robotarium.org/2016/03/29/rendezvous.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Formation Control</title>
+        <description>&lt;p&gt;Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.&lt;/p&gt;
+
+&lt;h1 id=&quot;problem-statement&quot;&gt;Problem Statement&lt;/h1&gt;
+
+&lt;p&gt;Consider a group of &lt;script type=&quot;math/tex&quot;&gt;N&lt;/script&gt; agents, where we define the state of each agent as &lt;script type=&quot;math/tex&quot;&gt;x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N&lt;/script&gt;.  This particular algorithm models each agent with the single-integrator dynamics&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\dot{x}_{i} = u_{i}&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;u_{i} \in \mathbb{R}^{2}&lt;/script&gt; is the control input to agent &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;.  The goal of formation control is to drive the agents to a translationally independent formation that satisfies a set of given constraints.  For this particular problem, the static communication topology is given by an undirected graph &lt;script type=&quot;math/tex&quot;&gt;G = (V, E)&lt;/script&gt; and a function &lt;script type=&quot;math/tex&quot;&gt;d : E \to \mathbb{R}^{2}&lt;/script&gt; that models the desired inter-agent distances.  To achieve a particular formation specified by &lt;script type=&quot;math/tex&quot;&gt;E&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt;, the communication topology enforced by &lt;script type=&quot;math/tex&quot;&gt;E&lt;/script&gt; must be rigid, a concept discussed in [&lt;a href=&quot;#olfati-saber&quot;&gt;1&lt;/a&gt;], [&lt;a href=&quot;#beard&quot;&gt;2&lt;/a&gt;], and [&lt;a href=&quot;#eren&quot;&gt;3&lt;/a&gt;].  For &lt;script type=&quot;math/tex&quot;&gt;\mathbb{R}^{2}&lt;/script&gt;, the rigidity requirements to ensure a translationally independent formation are&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+\dfrac{\text{car}(E)}{2} = 2N - 3
+\label{eq:rigidity}
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;\text{car}(E)/2&lt;/script&gt; represents the number of edges in an undirected graph (i.e., &lt;script type=&quot;math/tex&quot;&gt;(i, j), (j, i) \in E&lt;/script&gt;).  Intuitively, (\ref{eq:rigidity}) implies the removal of three degrees of freedom, which is required for translational independence in &lt;script type=&quot;math/tex&quot;&gt;\mathbb{R}^{2}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;/h1&gt;
+
+&lt;p&gt;The proposed algorithm utilizes the edge tension energy described in [&lt;a href=&quot;ji&quot;&gt;4&lt;/a&gt;].  The total edge tension energy of the system may be written as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;w(x) = \dfrac{1}{2}\sum_{i = 1}^{N}\sum_{j \in N_{i}} w_{ij}(x)&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;N_{i}&lt;/script&gt; is the neighborhood set to agent &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt; induced by the graph topology &lt;script type=&quot;math/tex&quot;&gt;G&lt;/script&gt;.  [&lt;a href=&quot;ji&quot;&gt;4&lt;/a&gt;] shows that the control law&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;u_{i} = -\dfrac{\partial w(x)}{\partial x_{i}}&lt;/script&gt;
+
+&lt;p&gt;can be used to drive the agents to the desired configuration, with the proper choice of &lt;script type=&quot;math/tex&quot;&gt;w_{ij}(x)&lt;/script&gt;.  This control law can be seen as a gradient descent on the edge tension energy of the agents.  Let &lt;script type=&quot;math/tex&quot;&gt;w_{ij}&lt;/script&gt; be defined as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;w_{ij}(x) = \dfrac{\alpha}{4}(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})^{2}&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;d_{ij} \in \mathbb{R}^{2}&lt;/script&gt; is the desired distance between two agents defined by &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt;, and &lt;script type=&quot;math/tex&quot;&gt;\alpha \in \mathbb{R}^{+}&lt;/script&gt; is a gain.  The gradient of this function is&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\dfrac{\partial w(x)}{\partial x_{i}} = -\sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})&lt;/script&gt;
+
+&lt;p&gt;substituting this result into the agent’s dynamics yields&lt;/p&gt;
+&lt;div&gt;
+\begin{equation}
+\dot{x}_i = \sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})
+\label{eq:formation-control-law}
+\end{equation}
+&lt;/div&gt;
+
+&lt;p&gt;which is a decentralized formation control law.&lt;/p&gt;
+
+&lt;h1 id=&quot;implementation&quot;&gt;Implementation&lt;/h1&gt;
+
+&lt;p&gt;Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the formation control algorithm described by (\ref{eq:formation-control-law}).  The code snippet below demonstrates the transfer of (\ref{eq:formation-control-law}) into the Robotarium’s MATLAB API.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c&quot;&gt;%Calculate single integrator control inputs using edge-energy consensus&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;% Initialize velocity to zero for each agent.  This allows us to sum&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;% over agent i&amp;#39;s neighbors&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;% Get the topological neighbors of agent i from the communication&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;% topology&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getTopNeighbors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;% For each neighbor, calculate appropriate formation control term and&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;% add it to the total velocity&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;%%% FORMATION CONTROL %%%&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;...&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;formationControlGain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;norm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;^&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;^&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;... &lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;%%% END FORMATION CONTROL %%%&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;deployment&quot;&gt;Deployment&lt;/h1&gt;
+
+&lt;p&gt;We deployed this algorithm onto the Robotarium with &lt;script type=&quot;math/tex&quot;&gt;N = 6&lt;/script&gt; agents and the formation specification&lt;/p&gt;
+&lt;div&gt;
+$$
+d = 
+\begin{bmatrix} 
+0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.4472 \\
+0.2 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 \\
+0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.4472 &amp;amp; 0 &amp;amp; 0.2 \\
+0.2 &amp;amp; 0 &amp;amp; 0.4472 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 \\
+0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.2 \\
+0.4472 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0 &amp;amp; 0.2 &amp;amp; 0
+\end{bmatrix}
+$$
+&lt;/div&gt;
+&lt;p&gt;where each index &lt;script type=&quot;math/tex&quot;&gt;d_{ij}&lt;/script&gt; is the distance constraint placed on edges &lt;script type=&quot;math/tex&quot;&gt;(i,j)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;(j,i)&lt;/script&gt;.  Note that &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt; induces &lt;script type=&quot;math/tex&quot;&gt;9&lt;/script&gt; edges, which ensures rigidity by (\ref{eq:rigidity}).  &lt;a href=&quot;#fc-data&quot;&gt;Figure 1&lt;/a&gt; displays the communication topology and the trajectories of the robots during the experiment.  Note that the agents achieve the desired rectangular formation.  The erratic motion in some agents’ trajectories stems from the rigidity of the formation, which restricts the agents’ movements.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;fc-data&quot;&gt;&lt;/a&gt;
+&lt;img src=&quot;/assets/formationControl.png&quot; alt=&quot;&quot; /&gt;
+&lt;strong&gt;Fig 1. Physical robots’ trajectories and communication topology (“Edge” in the legend) during the deployment of the decentralized formation control algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;a name=&quot;olfati-saber&quot;&gt;&lt;/a&gt;
+[1] R. Olfati-Saber and R. M. Murray, “Distributed structural stabilization
+and tracking for formations of dynamic multi-agents,” &lt;em&gt;Proc. 41st IEEE
+Conf. Decision Control&lt;/em&gt;, vol. 1, pp. 209–215, Dec. 2002.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;beard&quot;&gt;&lt;/a&gt;
+[2] R. W. Beard, J. R. Lawton, and F. Y. Hadaegh, “A coordination architecture
+for spacecraft formation control,” &lt;em&gt;IEEE Trans. Control Syst. Technol.&lt;/em&gt;,
+vol. 9, no. 6, pp. 777–790, Nov. 2001&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;eren&quot;&gt;&lt;/a&gt;
+[3] T. Eren, P. Belhumeur, B. Anderson, and A. Morse, “A framework for
+maintaining formations based on rigidity,” in &lt;em&gt;Proc. 2002 IFAC Congr.&lt;/em&gt;,
+pp. 2752–2757.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;ji&quot;&gt;&lt;/a&gt;
+[4] M. Ji and M. Egerstedt. Distributed Coordination Control of Multi-Agent Systems While Preserving Connectedness. &lt;em&gt;IEEE Transactions on Robotics&lt;/em&gt;, Vol. 23, No. 4, pp. 693-703, Aug. 2007.&lt;/p&gt;
 
 </description>
-        <pubDate>Mon, 29 Feb 2016 07:32:30 -0500</pubDate>
-        <link>http://www.robotarium.org/jekyll/update/2016/02/29/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://www.robotarium.org/jekyll/update/2016/02/29/welcome-to-jekyll.html</guid>
+        <pubDate>Tue, 29 Mar 2016 00:00:00 -0400</pubDate>
+        <link>http://www.robotarium.org/2016/03/29/formation-control.html</link>
+        <guid isPermaLink="true">http://www.robotarium.org/2016/03/29/formation-control.html</guid>
         
-        
-        <category>jekyll</category>
-        
-        <category>update</category>
         
       </item>
     

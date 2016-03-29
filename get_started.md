@@ -19,7 +19,7 @@ N = 7;
 robotarium = Robotarium(N);
 
 % Graph Laplacian for a complete graph
-L = ones(N, N) - N * eye(N);
+L = N * eye(N) - ones(N, N);
 
 while(true)
 
@@ -28,7 +28,7 @@ while(true)
 
     % Calculate the control input for the continuous-time consensus
     % dynamics in 2 dimensions
-    dx = kron(eye(2), L) * [x(1, :)' ; x(2, :)'];
+    dx = -kron(eye(2), L) * [x(1, :)' ; x(2, :)'];
 
     % Restructure data
     dx = [dx(1:N)' ; dx(N+1:(2*N))'];
