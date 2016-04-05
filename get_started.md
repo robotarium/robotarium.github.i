@@ -8,40 +8,42 @@ Currently the robotarium supports MATLAB scripting to specify robot dynamics. Be
 
 # The consensus protocol in code
 
-Below is an example consensus algorithm using the Robotarium's MATLAB API.
+Below is an pseudo-example consensus algorithm using the Robotarium's MATLAB API.
 
 {% highlight matlab %}
 
-% Declare number of robots
-N = 7;
+% Initialize the Robotarium
+r = Robotarium();
+N = r.getAvailableAgents();
+r.initialize(N);
 
-% Initialize Robotarium
-robotarium = Robotarium(N);
+% Create a cyclic graph Laplacian using the built-in graph utilities
+L = cycleGL(N);
 
-% Graph Laplacian for a complete graph
-L = N * eye(N) - ones(N, N);
+for i = 1:N
 
-while(true)
+    % Initialize velocity to zero for each agent.  This allows us to sum
+    % over agent i's neighbors
+    dx(:, i) = [0 ; 0];
 
-    % Get the latest pose data from the robots in format 3 x N
-    x = robotarium.getPoses()
+    % Get the topological neighbors of agent i based on the graph
+    % Laplacian L
+    neighbors = r.getTopNeighbors(i, L);
 
-    % Calculate the control input for the continuous-time consensus
-    % dynamics in 2 dimensions
-    dx = -kron(eye(2), L) * [x(1, :)' ; x(2, :)'];
+    % Iterate through agent i's neighbors
+    for j = neighbors
 
-    % Restructure data
-    dx = [dx(1:N)' ; dx(N+1:(2*N))'];
+        %%% CONSENSUS %%%
 
-    % Use a provided diffeomorphism to transform
-    % single-integrator to unicycle dynamics
-    dx = diffeomorphism(dx, x);
+        % For each neighbor, calculate appropriate consensus term and
+        %add it to the total velocity
+        dx(:, i) = dx(:, i) + (x(1:2, j) - x(1:2, i));
 
-    % Set the velocities of the robots
-    robotarium.setVelocities(dx);
-
+        %%% END CONSENSUS %%%
+    end
 end
 
+r.setVelocities(dx);
 {% endhighlight %}
 
 # Running your code on real robots!

@@ -4,16 +4,15 @@ title:  "Rendezvous"
 date:   2016-03-29
 ---
 
-Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium's MATLAB API.  Additionally, this document contains experimental data from the Robotarium's robots. 
+Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium's MATLAB API.  Additionally, this document contains experimental data from the Robotarium's robots and a [video](https://youtu.be/mAmdrta8jio).
 
-Problem Statement
-=================
+# Problem Statement
 
 Consider a group of $$N$$ agents, where we define the state of each agent as $$x_{i} \in \mathbb{R}^{2},~ i = 1,\ldots,N$$.  This particular algorithm models each agent with the single-integrator dynamics
 $$
 \dot{x}_{i} = u_{i}
 $$
-where $$u_{i} \in \mathbb{R}^{2}$$ is the control input to agent $$i$$.  The rendezvous problem requires the design of a control input $$u_{i}$$ such that 
+where $$u_{i} \in \mathbb{R}^{2}$$ is the control input to agent $$i$$.  The rendezvous problem requires the design of a control input $$u_{i}$$ such that
 <div>
 \begin{equation}
     \lim_{t \to \infty} (x_{i} - x_{j}) = 0, ~ \forall ~ i,j = 1,\ldots,N
@@ -21,8 +20,7 @@ where $$u_{i} \in \mathbb{R}^{2}$$ is the control input to agent $$i$$.  The ren
 \end{equation}
 </div>
 
-Solution
-========
+# Solution
 
 A common solution to the rendezvous problem is to let $u_{i}$ be defined using the local interaction rule (e.g., as in [[1](#jadbabaie)]).
 $$
@@ -36,7 +34,7 @@ yielding the node-level dynamics
 \end{equation}
 </div>
 
-where $$N_{i}$$ represents the neighbors of agent $$i$$ induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph $$G = (V, E)$$ where the following condition holds 
+where $$N_{i}$$ represents the neighbors of agent $$i$$ induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph $$G = (V, E)$$ where the following condition holds
 $$
 j \in N_{i} \iff (i, j), (j, i) \in E
 $$
@@ -44,7 +42,7 @@ Then, the node-level dynamics may be re-written as ensemble-level dynamics by co
 $$
 x = \left[ x_{1,1} ~ x_{2,1} \ldots ~ x_{N,1} ~ x_{1, 2} ~ x_{2, 2} ~ \ldots ~ x_{N, 2} \right]^{T}
 $$
-yielding the ensemble-level dynamics 
+yielding the ensemble-level dynamics
 $$
 \dot{x} = -(I \otimes L)x
 $$
@@ -54,8 +52,7 @@ $$
 $$
 where $$x_{j}(0)$$ is the initial condition of agent $$j$$.  This result solves the problem stated in(\ref{eq:solution}).  Interestingly, the agents always meet at the average of the initial conditions.  For relevant properties of the graph Laplacian, refer to sources such as [[2](#godsil)].  
 
-Implementation
-==============
+# Implementation
 
 Using the previously defined algorithm and the Robotarium's provided MATLAB interface, we implemented the consensus algorithm in (\ref{eq:node-level-dynamics}).  The code snippet below demonstrates the transfer of the consensus algorithm into the Robotarium's MATLAB API.
 
@@ -84,18 +81,16 @@ for i = 1:N
 end
 {% endhighlight %}
 
-Deployment
-==========
+# Deployment
 
 For the experiment, we selected $$N = 6$$ and $$G = C_{6}$$ (i.e., an undirected cycle graph containing 6 agents).  This choice for $$G$$ ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in [Figure 1](#consensus-data).  Note that, due to the physical size of the robots, the agents did not reach the same point.
 
 <a name="consensus-data"></a>
-![](/assets/rendezvous.png)
+![](/assets/rendezvousEdited.png)
 **Fig 1. Physical robots' trajectories during the deployment of the consensus algorithm onto the Robotarium**
 
 
-References
-==========
+# References
 
 <a name="jadbabaie"></a>
 [1] A. Jadbabaie, J. Lin, and A. S. Morse, “Coordination of groups of mobile

@@ -150,7 +150,7 @@ MathJax.Hub.Config({
   </header>
 
   <article class="post-content">
-    <p>Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.</p>
+    <p>Rendezvous is a network control algorithm which allows a collection of robots to meet at at the centroid of their initial positions. This document is a mathematical companion to the rendezvous sample code for the Robotarium.  It summarizes the mathematics behind the consensus algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots and a <a href="https://youtu.be/mAmdrta8jio">video</a>.</p>
 
 <h1 id="problem-statement">Problem Statement</h1>
 
@@ -176,11 +176,11 @@ yielding the node-level dynamics</p>
 \end{equation}
 </div>
 
-<p>where <script type="math/tex">N_{i}</script> represents the neighbors of agent <script type="math/tex">i</script> induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph <script type="math/tex">G = (V, E)</script> where the following condition holds 
+<p>where <script type="math/tex">N_{i}</script> represents the neighbors of agent <script type="math/tex">i</script> induced by a particular communication topology.  For this algorithm, consider the communication topology of the agents to be static and represented by an undirected graph <script type="math/tex">G = (V, E)</script> where the following condition holds
 <script type="math/tex">j \in N_{i} \iff (i, j), (j, i) \in E</script>
 Then, the node-level dynamics may be re-written as ensemble-level dynamics by combining the agents’ states together into the vector
 <script type="math/tex">x = \left[ x_{1,1} ~ x_{2,1} \ldots ~ x_{N,1} ~ x_{1, 2} ~ x_{2, 2} ~ \ldots ~ x_{N, 2} \right]^{T}</script>
-yielding the ensemble-level dynamics 
+yielding the ensemble-level dynamics
 <script type="math/tex">\dot{x} = -(I \otimes L)x</script>
 where <script type="math/tex">L</script> is the graph Laplacian to the graph <script type="math/tex">G</script>, and <script type="math/tex">I</script> is an identity matrix of the appropriate dimension.  Note that <script type="math/tex">x_{i, j}</script> refers to the <script type="math/tex">j</script>th state variable of agent <script type="math/tex">x_{i} \in \mathbb{R}^{2}</script>.  This algorithm is known as the consensus algorithm.  Using the properties of <script type="math/tex">L</script>, we can also show each agent’s final position is given by
 <script type="math/tex">\lim_{t \to \infty} x_{i}(t) = \dfrac{1}{N} \sum_{j=1}^{N} x_{j}(0), ~ \forall ~ i = 1,\ldots,N</script>
@@ -218,7 +218,7 @@ where <script type="math/tex">x_{j}(0)</script> is the initial condition of agen
 <p>For the experiment, we selected <script type="math/tex">N = 6</script> and <script type="math/tex">G = C_{6}</script> (i.e., an undirected cycle graph containing 6 agents).  This choice for <script type="math/tex">G</script> ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in <a href="#consensus-data">Figure 1</a>.  Note that, due to the physical size of the robots, the agents did not reach the same point.</p>
 
 <p><a name="consensus-data"></a>
-<img src="/assets/rendezvous.png" alt="" />
+<img src="/assets/rendezvousEdited.png" alt="" />
 <strong>Fig 1. Physical robots’ trajectories during the deployment of the consensus algorithm onto the Robotarium</strong></p>
 
 <h1 id="references">References</h1>

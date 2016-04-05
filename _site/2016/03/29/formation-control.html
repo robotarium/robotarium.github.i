@@ -150,7 +150,7 @@ MathJax.Hub.Config({
   </header>
 
   <article class="post-content">
-    <p>Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots.</p>
+    <p>Formation control is a network control algorithm which allows a collection of robots to form and maintain a particular shape in a distributed manner. This document provides a mathematical derivation and an implementation of sample code to implement formation control  for the Robotarium.  It summarizes the mathematics behind a decentralized formation control algorithm and highlights the transfer of the formal specification to the Robotarium’s MATLAB API.  Additionally, this document contains experimental data from the Robotarium’s robots and a <a href="https://youtu.be/nm4jUjTxZ_U">video</a>.</p>
 
 <h1 id="problem-statement">Problem Statement</h1>
 
@@ -216,11 +216,11 @@ MathJax.Hub.Config({
         <span class="c1">%%% FORMATION CONTROL %%%</span>
 
         <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="k">...</span>
-        <span class="n">formationControlGain</span><span class="o">*</span><span class="p">(</span><span class="nb">norm</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">))</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="n">weights</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="k">...</span><span class="c"> </span>
-        <span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
+        <span class="n">formationControlGain</span><span class="o">*</span><span class="p">(</span><span class="nb">norm</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">))</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="n">weights</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="k">...</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
 
         <span class="c1">%%% END FORMATION CONTROL %%%</span>
-    <span class="k">end</span> 
+    <span class="k">end</span>
 <span class="k">end</span></code></pre></figure>
 
 <h1 id="deployment">Deployment</h1>
@@ -228,8 +228,8 @@ MathJax.Hub.Config({
 <p>We deployed this algorithm onto the Robotarium with <script type="math/tex">N = 6</script> agents and the formation specification</p>
 <div>
 $$
-d = 
-\begin{bmatrix} 
+d =
+\begin{bmatrix}
 0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.4472 \\
 0.2 &amp; 0 &amp; 0.2 &amp; 0 &amp; 0.2 &amp; 0 \\
 0 &amp; 0.2 &amp; 0 &amp; 0.4472 &amp; 0 &amp; 0.2 \\
@@ -241,9 +241,11 @@ $$
 </div>
 <p>where each index <script type="math/tex">d_{ij}</script> is the distance constraint placed on edges <script type="math/tex">(i,j)</script> and <script type="math/tex">(j,i)</script>.  Note that <script type="math/tex">d</script> induces <script type="math/tex">9</script> edges, which ensures rigidity by (\ref{eq:rigidity}).  <a href="#fc-data">Figure 1</a> displays the communication topology and the trajectories of the robots during the experiment.  Note that the agents achieve the desired rectangular formation.  The erratic motion in some agents’ trajectories stems from the rigidity of the formation, which restricts the agents’ movements.</p>
 
-<p><a name="fc-data"></a>
-<img src="/assets/formationControl.png" alt="" />
-<strong>Fig 1. Physical robots’ trajectories and communication topology (“Edge” in the legend) during the deployment of the decentralized formation control algorithm onto the Robotarium</strong></p>
+<p><a name="fc-data"></a></p>
+
+<p><img src="/assets/formationControlEdited.png" alt="" /></p>
+
+<p><strong>Fig 1. Physical robots’ trajectories (dashed) and communication topology (solid) during the deployment of the decentralized formation control algorithm onto the Robotarium</strong></p>
 
 <h1 id="references">References</h1>
 
@@ -264,7 +266,6 @@ pp. 2752–2757.</p>
 
 <p><a name="ji"></a>
 [4] M. Ji and M. Egerstedt. Distributed Coordination Control of Multi-Agent Systems While Preserving Connectedness. <em>IEEE Transactions on Robotics</em>, Vol. 23, No. 4, pp. 693-703, Aug. 2007.</p>
-
 
   </article>
 

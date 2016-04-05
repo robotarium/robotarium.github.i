@@ -154,37 +154,40 @@ MathJax.Hub.Config({
 
 <h1 id="the-consensus-protocol-in-code">The consensus protocol in code</h1>
 
-<p>Below is an example consensus algorithm using the Robotarium’s MATLAB API.</p>
+<p>Below is an pseudo-example consensus algorithm using the Robotarium’s MATLAB API.</p>
 
-<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">% Declare number of robots</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">% Initialize the Robotarium</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">Robotarium</span><span class="p">();</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getAvailableAgents</span><span class="p">();</span>
+<span class="n">r</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
 
-<span class="c1">% Initialize Robotarium</span>
-<span class="n">robotarium</span> <span class="o">=</span> <span class="n">Robotarium</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
+<span class="c1">% Create a cyclic graph Laplacian using the built-in graph utilities</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">cycleGL</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
 
-<span class="c1">% Graph Laplacian for a complete graph</span>
-<span class="n">L</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="nb">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="nb">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">);</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
 
-<span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+    <span class="c1">% Initialize velocity to zero for each agent.  This allows us to sum</span>
+    <span class="c1">% over agent i's neighbors</span>
+    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
 
-    <span class="c1">% Get the latest pose data from the robots in format 3 x N</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">robotarium</span><span class="o">.</span><span class="n">getPoses</span><span class="p">()</span>
+    <span class="c1">% Get the topological neighbors of agent i based on the graph</span>
+    <span class="c1">% Laplacian L</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
 
-    <span class="c1">% Calculate the control input for the continuous-time consensus</span>
-    <span class="c1">% dynamics in 2 dimensions</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="o">-</span><span class="nb">kron</span><span class="p">(</span><span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">:)</span><span class="s1">' ; x(2, :)'</span><span class="p">];</span>
+    <span class="c1">% Iterate through agent i's neighbors</span>
+    <span class="k">for</span> <span class="nb">j</span> <span class="o">=</span> <span class="n">neighbors</span>
 
-    <span class="c1">% Restructure data</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="p">)</span><span class="s1">' ; dx(N+1:(2*N))'</span><span class="p">];</span>
+        <span class="c1">%%% CONSENSUS %%%</span>
 
-    <span class="c1">% Use a provided diffeomorphism to transform</span>
-    <span class="c1">% single-integrator to unicycle dynamics</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="n">diffeomorphism</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+        <span class="c1">% For each neighbor, calculate appropriate consensus term and</span>
+        <span class="c1">%add it to the total velocity</span>
+        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
 
-    <span class="c1">% Set the velocities of the robots</span>
-    <span class="n">robotarium</span><span class="o">.</span><span class="n">setVelocities</span><span class="p">(</span><span class="n">dx</span><span class="p">);</span>
+        <span class="c1">%%% END CONSENSUS %%%</span>
+    <span class="k">end</span>
+<span class="k">end</span>
 
-<span class="k">end</span></code></pre></figure>
+<span class="n">r</span><span class="o">.</span><span class="n">setVelocities</span><span class="p">(</span><span class="n">dx</span><span class="p">);</span></code></pre></figure>
 
 <h1 id="running-your-code-on-real-robots">Running your code on real robots!</h1>
 
