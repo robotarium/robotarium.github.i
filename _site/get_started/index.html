@@ -68,6 +68,8 @@ MathJax.Hub.Config({
           
         
           
+          <a class="page-link" href="/">Home</a>
+          
         
           
         
@@ -81,7 +83,66 @@ MathJax.Hub.Config({
 
 
     <div class="page-content">
+
       <div class="wrapper">
+        <style>
+
+  a.nav-link:link
+  {
+     color: #2d2d2d;
+     text-decoration: none;
+  }
+  a.nav-link:visited
+  {
+     color: #2d2d2d;
+     text-decoration: none;
+  }
+  a.nav-link:hover
+  {
+     color: #2d2d2d;
+     text-decoration: none;
+  }
+  a.nav-link:active
+  {
+     color: #2d2d2d;
+     text-decoration: none;
+  }
+
+  ul {
+      list-style-type: none;
+      margin: 0px 0px 14px 0px;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f7941e;
+  }
+
+  li {
+      float: left;
+  }
+
+  li a {
+      display: block;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-weight: bold;
+  }
+
+  li a:hover {
+      background-color: #ffbb41;
+  }
+
+</style>
+
+<ul>
+  <li><a href="/" class="nav-link">Home</a></li>
+  <li><a href="/examples" class="nav-link">Examples</a></li>
+  <li><a href="/get_started" class="nav-link">Get Started</a></li>
+  <!--<li><a href="#contact">Contact</a></li>
+  <li><a href="#about">About</a></li>
+  -->
+</ul>
+
         <div class="post">
 
   <header class="post-header">
@@ -92,6 +153,7 @@ MathJax.Hub.Config({
     <p>Currently the robotarium supports MATLAB scripting to specify robot dynamics. Below we walk through a simple example which implements a cannonical algorithm in network control theory known as the consensus protocol. Download the example files <a href="https://github.com/robotarium/robotarium-matlab-simulator">here</a>.</p>
 
 <h1 id="the-consensus-protocol-in-code">The consensus protocol in code</h1>
+
 <p>Below is an example consensus algorithm using the Robotarium’s MATLAB API.</p>
 
 <figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">% Declare number of robots</span>
@@ -115,7 +177,7 @@ MathJax.Hub.Config({
     <span class="c1">% Restructure data</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="p">)</span><span class="s1">' ; dx(N+1:(2*N))'</span><span class="p">];</span>
 
-    <span class="c1">% Use a provided diffeomorphism to transform </span>
+    <span class="c1">% Use a provided diffeomorphism to transform</span>
     <span class="c1">% single-integrator to unicycle dynamics</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="n">diffeomorphism</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
 
@@ -124,9 +186,8 @@ MathJax.Hub.Config({
 
 <span class="k">end</span></code></pre></figure>
 
-<h1 id="simulate-the-example-code">Simulate the example code</h1>
-
 <h1 id="running-your-code-on-real-robots">Running your code on real robots!</h1>
+
 <p>In order to do this write your own script and verify it in the simulator.  Then contact either <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#109;&#097;&#103;&#110;&#117;&#115;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Magnus Egerstedt</a> or <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#097;&#110;&#105;&#101;&#108;&#046;&#112;&#105;&#099;&#107;&#101;&#109;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Daniel Pickem</a> and they will contact you with instructions on how to run your code!</p>
 
   </article>
