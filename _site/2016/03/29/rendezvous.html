@@ -129,28 +129,28 @@ where <script type="math/tex">x_{j}(0)</script> is the initial condition of agen
 
 <p>Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the consensus algorithm in (\ref{eq:node-level-dynamics}).  The code snippet below demonstrates the transfer of the consensus algorithm into the Robotarium’s MATLAB API.</p>
 
-<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="k">for</span> <span class="nb">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
 
-    <span class="c">% Initialize velocity to zero for each agent.  This allows us to sum</span>
-    <span class="c">% over agent i&#39;s neighbors</span>
-    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+    <span class="c1">% Initialize velocity to zero for each agent.  This allows us to sum</span>
+    <span class="c1">% over agent i's neighbors</span>
+    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
 
-    <span class="c">% Get the topological neighbors of agent i based on the graph</span>
-    <span class="c">% Laplacian L</span>
-    <span class="n">neighbors</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
+    <span class="c1">% Get the topological neighbors of agent i based on the graph</span>
+    <span class="c1">% Laplacian L</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
 
-    <span class="c">% Iterate through agent i&#39;s neighbors</span>
-    <span class="k">for</span> <span class="nb">j</span> <span class="p">=</span> <span class="n">neighbors</span>
+    <span class="c1">% Iterate through agent i's neighbors</span>
+    <span class="k">for</span> <span class="nb">j</span> <span class="o">=</span> <span class="n">neighbors</span>
 
-        <span class="c">%%% CONSENSUS %%%</span>
+        <span class="c1">%%% CONSENSUS %%%</span>
 
-        <span class="c">% For each neighbor, calculate appropriate consensus term and</span>
-        <span class="c">%add it to the total velocity</span>
-        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
+        <span class="c1">% For each neighbor, calculate appropriate consensus term and</span>
+        <span class="c1">%add it to the total velocity</span>
+        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
 
-        <span class="c">%%% END CONSENSUS %%%</span>
+        <span class="c1">%%% END CONSENSUS %%%</span>
     <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h1 id="deployment">Deployment</h1>
 

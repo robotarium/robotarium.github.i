@@ -138,29 +138,29 @@ MathJax.Hub.Config({
 
 <p>Using the previously defined algorithm and the Robotarium’s provided MATLAB interface, we implemented the formation control algorithm described by (\ref{eq:formation-control-law}).  The code snippet below demonstrates the transfer of (\ref{eq:formation-control-law}) into the Robotarium’s MATLAB API.</p>
 
-<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c">%Calculate single integrator control inputs using edge-energy consensus</span>
-<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%Calculate single integrator control inputs using edge-energy consensus</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
 
-    <span class="c">% Initialize velocity to zero for each agent.  This allows us to sum</span>
-    <span class="c">% over agent i&#39;s neighbors</span>
-    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+    <span class="c1">% Initialize velocity to zero for each agent.  This allows us to sum</span>
+    <span class="c1">% over agent i's neighbors</span>
+    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
 
-    <span class="c">% Get the topological neighbors of agent i from the communication</span>
-    <span class="c">% topology</span>
-    <span class="k">for</span> <span class="nb">j</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+    <span class="c1">% Get the topological neighbors of agent i from the communication</span>
+    <span class="c1">% topology</span>
+    <span class="k">for</span> <span class="nb">j</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
 
-        <span class="c">% For each neighbor, calculate appropriate formation control term and</span>
-        <span class="c">% add it to the total velocity</span>
+        <span class="c1">% For each neighbor, calculate appropriate formation control term and</span>
+        <span class="c1">% add it to the total velocity</span>
 
-        <span class="c">%%% FORMATION CONTROL %%%</span>
+        <span class="c1">%%% FORMATION CONTROL %%%</span>
 
-        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="c">...</span>
-        <span class="n">formationControlGain</span><span class="o">*</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">))</span>^<span class="mi">2</span> <span class="o">-</span> <span class="n">weights</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span>^<span class="mi">2</span><span class="p">)</span> <span class="c">... </span>
+        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="k">...</span>
+        <span class="n">formationControlGain</span><span class="o">*</span><span class="p">(</span><span class="nb">norm</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">))</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="n">weights</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="k">...</span><span class="c"> </span>
         <span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
 
-        <span class="c">%%% END FORMATION CONTROL %%%</span>
+        <span class="c1">%%% END FORMATION CONTROL %%%</span>
     <span class="k">end</span> 
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h1 id="deployment">Deployment</h1>
 
