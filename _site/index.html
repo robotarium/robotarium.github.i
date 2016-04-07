@@ -87,6 +87,47 @@ MathJax.Hub.Config({
       <div class="wrapper">
         <style>
 
+  .dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 14px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #ffbb41;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown:hover .dropbtn {
+    background-color: #ffbb41;
+  }
+
   a.nav-link:link
   {
      color: #2d2d2d;
@@ -110,9 +151,11 @@ MathJax.Hub.Config({
 
   ul {
       list-style-type: none;
+      width: auto;
+      height: 52px;
       margin: 0px 0px 14px 0px;
       padding: 0;
-      overflow: hidden;
+      overflow: visible;
       background-color: #f7941e;
   }
 
@@ -136,11 +179,25 @@ MathJax.Hub.Config({
 
 <ul>
   <li><a href="/" class="nav-link">Home</a></li>
-  <li><a href="/examples" class="nav-link">Examples</a></li>
+  <li>
+    <div class="dropdown">
+      <a href="/examples" class="nav-link">
+        Examples
+      </a>
+      <div class="dropdown-content">
+        
+          <a class="nav-link" href="/2016/03/29/rendezvous.html">
+             Rendezvous
+          </a>
+        
+          <a class="nav-link" href="/2016/03/29/formation-control.html">
+             Formation Control
+          </a>
+        
+      </div>
+    </div>
+  </li>
   <li><a href="/get_started" class="nav-link">Get Started</a></li>
-  <!--<li><a href="#contact">Contact</a></li>
-  <li><a href="#about">About</a></li>
-  -->
 </ul>
 
         <h1 id="what-is-the-robotarium">What is the Robotarium?</h1>
