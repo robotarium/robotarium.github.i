@@ -86,7 +86,9 @@ end
 For the experiment, we selected $$N = 6$$ and $$G = C_{6}$$ (i.e., an undirected cycle graph containing 6 agents).  This choice for $$G$$ ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in [Figure 1](#consensus-data).  Note that, due to the physical size of the robots, the agents did not reach the same point.
 
 <a name="consensus-data"></a>
-![](/assets/rendezvousEdited.png)
+<div style="margin: 0px auto; text-align: center;">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/mAmdrta8jio" frameborder="0" allowfullscreen></iframe>
+</div>
 **Fig 1. Physical robots' trajectories during the deployment of the consensus algorithm onto the Robotarium**
 
 

@@ -5,8 +5,8 @@
     <description></description>
     <link>http://www.robotarium.org/</link>
     <atom:link href="http://www.robotarium.org/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 07 Apr 2016 11:47:47 -0400</pubDate>
-    <lastBuildDate>Thu, 07 Apr 2016 11:47:47 -0400</lastBuildDate>
+    <pubDate>Thu, 07 Apr 2016 16:29:21 -0400</pubDate>
+    <lastBuildDate>Thu, 07 Apr 2016 16:29:21 -0400</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
     
       <item>
@@ -78,9 +78,11 @@ where &lt;script type=&quot;math/tex&quot;&gt;x_{j}(0)&lt;/script&gt; is the ini
 
 &lt;p&gt;For the experiment, we selected &lt;script type=&quot;math/tex&quot;&gt;N = 6&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;G = C_{6}&lt;/script&gt; (i.e., an undirected cycle graph containing 6 agents).  This choice for &lt;script type=&quot;math/tex&quot;&gt;G&lt;/script&gt; ensured that the agents remained connected during the experiment.  Deploying the consensus algorithm onto the Robotarium yielded the results shown in &lt;a href=&quot;#consensus-data&quot;&gt;Figure 1&lt;/a&gt;.  Note that, due to the physical size of the robots, the agents did not reach the same point.&lt;/p&gt;
 
-&lt;p&gt;&lt;a name=&quot;consensus-data&quot;&gt;&lt;/a&gt;
-&lt;img src=&quot;/assets/rendezvousEdited.png&quot; alt=&quot;&quot; /&gt;
-&lt;strong&gt;Fig 1. Physical robots’ trajectories during the deployment of the consensus algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;consensus-data&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div style=&quot;margin: 0px auto; text-align: center;&quot;&gt;
+  &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/mAmdrta8jio&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Fig 1. Physical robots’ trajectories during the deployment of the consensus algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
 
@@ -132,7 +134,7 @@ Springer, 2001&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;w_{ij}(x) = \dfrac{\alpha}{4}(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})^{2}&lt;/script&gt;
 
-&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;d_{ij} \in \mathbb{R}^{2}&lt;/script&gt; is the desired distance between two agents defined by &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt;, and &lt;script type=&quot;math/tex&quot;&gt;\alpha \in \mathbb{R}^{+}&lt;/script&gt; is a gain.  The gradient of this function is&lt;/p&gt;
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;d_{ij} \in \mathbb{R}^{+}&lt;/script&gt; is the desired distance between two agents defined by &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt;, and &lt;script type=&quot;math/tex&quot;&gt;\alpha \in \mathbb{R}^{+}&lt;/script&gt; is a gain.  The gradient of this function is&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\dfrac{\partial w(x)}{\partial x_{i}} = -\sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})&lt;/script&gt;
 
@@ -193,9 +195,9 @@ $$
 &lt;p&gt;where each index &lt;script type=&quot;math/tex&quot;&gt;d_{ij}&lt;/script&gt; is the distance constraint placed on edges &lt;script type=&quot;math/tex&quot;&gt;(i,j)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;(j,i)&lt;/script&gt;.  Note that &lt;script type=&quot;math/tex&quot;&gt;d&lt;/script&gt; induces &lt;script type=&quot;math/tex&quot;&gt;9&lt;/script&gt; edges, which ensures rigidity by (\ref{eq:rigidity}).  &lt;a href=&quot;#fc-data&quot;&gt;Figure 1&lt;/a&gt; displays the communication topology and the trajectories of the robots during the experiment.  Note that the agents achieve the desired rectangular formation.  The erratic motion in some agents’ trajectories stems from the rigidity of the formation, which restricts the agents’ movements.&lt;/p&gt;
 
 &lt;p&gt;&lt;a name=&quot;fc-data&quot;&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/formationControlEdited.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
+&lt;div style=&quot;margin: 0px auto; text-align: center;&quot;&gt;
+  &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/nm4jUjTxZ_U&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;Fig 1. Physical robots’ trajectories (dashed) and communication topology (solid) during the deployment of the decentralized formation control algorithm onto the Robotarium&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;

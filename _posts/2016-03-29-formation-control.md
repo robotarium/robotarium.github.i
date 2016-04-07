@@ -35,7 +35,7 @@ can be used to drive the agents to the desired configuration, with the proper ch
 
 $$w_{ij}(x) = \dfrac{\alpha}{4}(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})^{2}$$
 
-where $$d_{ij} \in \mathbb{R}^{2}$$ is the desired distance between two agents defined by $$d$$, and $$\alpha \in \mathbb{R}^{+}$$ is a gain.  The gradient of this function is
+where $$d_{ij} \in \mathbb{R}^{+}$$ is the desired distance between two agents defined by $$d$$, and $$\alpha \in \mathbb{R}^{+}$$ is a gain.  The gradient of this function is
 
 $$\dfrac{\partial w(x)}{\partial x_{i}} = -\sum_{j \in N_{i}} \alpha(\|x_{i} - x_{j}\|^{2} - d_{ij}^{2})(x_{j} - x_{i})$$
 
@@ -98,9 +98,9 @@ $$
 where each index $$d_{ij}$$ is the distance constraint placed on edges $$(i,j)$$ and $$(j,i)$$.  Note that $$d$$ induces $$9$$ edges, which ensures rigidity by (\ref{eq:rigidity}).  [Figure 1](#fc-data) displays the communication topology and the trajectories of the robots during the experiment.  Note that the agents achieve the desired rectangular formation.  The erratic motion in some agents' trajectories stems from the rigidity of the formation, which restricts the agents' movements.
 
 <a name="fc-data"></a>
-
-![](/assets/formationControlEdited.png)
-
+<div style="margin: 0px auto; text-align: center;">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/nm4jUjTxZ_U" frameborder="0" allowfullscreen></iframe>
+</div>
 **Fig 1. Physical robots' trajectories (dashed) and communication topology (solid) during the deployment of the decentralized formation control algorithm onto the Robotarium**
 
 # References
