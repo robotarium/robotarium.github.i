@@ -6,13 +6,15 @@ permalink: /
 
 # What is the Robotarium?
 
-The Robotarium project's objective is to make an online, swarm robotics platform that remains freely accessible to anyone. Robotics research currently involves massive investments to competitively participate. However, we believe that anyone with new, amazing ideas should be able to see their algorithms deployed on real robots, rather than purely simulated. In order to make this vision possible, we are creating a remote-access, robotics lab where anyone can upload and test their ideas on real hardware.
+The Robotarium project aims to provide an online, swarm robotics platform that remains freely accessible to anyone.  Currently, Robotics research requires massive investments to competitively participate. However, we believe that anyone with new, amazing ideas should be able to see their algorithms deployed on real robots, rather than purely simulated. In order to make this vision possible, we are creating a remote-access, robotics lab where anyone can upload and test their ideas on real hardware.
 
-![Hand Image](/assets/hand_pic.png)
+<div style="margin: 0px auto; text-align: center;">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/fMEttcp5UWY" frameborder="0" allowfullscreen></iframe>
+</div>
 
 # Get involved
 
-The Robotarium is now open for business! Currently the Robotarium is in closed alpha. In order to be a tester contact [Daniel Pickem](mailto:daniel.pickem@gatech.edu) or [Magnus Egerstedt](mailto:magnus@gatech.edu). You can get started right away using the Robotarium simulator provided [here](/get_started/). We have also developed a set of well documented [examples](/examples/) which currently run on the Robotarium which you can review.
+The Robotarium is now open for business! Currently, the Robotarium is in closed alpha. In order to be a tester, contact [Daniel Pickem](mailto:daniel.pickem@gatech.edu) or [Magnus Egerstedt](mailto:magnus@gatech.edu). You can get started right away using the Robotarium simulator provided [here](/get_started/). We have also developed a set of well-documented [examples](/examples/), which currently run on the Robotarium.
 
 # Cite the Robotarium
 
