@@ -149,7 +149,7 @@ MathJax.Hub.Config({
      text-decoration: none;
   }
 
-  ul {
+  ul.nav-bar-list {
       list-style-type: none;
       width: auto;
       height: 52px;
@@ -159,25 +159,25 @@ MathJax.Hub.Config({
       background-color: #f7941e;
   }
 
-  li {
+  ul.nav-bar-list li {
       float: left;
   }
 
-  li a {
-      display: block;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-weight: bold;
+  ul.nav-bar-list li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-weight: bold;
   }
 
-  li a:hover {
-      background-color: #ffbb41;
+  ul.nav-bar-list li a:hover {
+    background-color: #ffbb41;
   }
 
 </style>
 
-<ul>
+<ul class="nav-bar-list">
   <li><a href="/" class="nav-link">Home</a></li>
   <li>
     <div class="dropdown">
@@ -211,45 +211,13 @@ MathJax.Hub.Config({
 
 <h1 id="running-your-code-on-real-robots">Running your code on real robots!</h1>
 
-<p>Write your own script and verify it in the simulator.  Then contact either <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#109;&#097;&#103;&#110;&#117;&#115;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Magnus Egerstedt</a> or <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#097;&#110;&#105;&#101;&#108;&#046;&#112;&#105;&#099;&#107;&#101;&#109;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Daniel Pickem</a>, and they will contact you with instructions on how to run your code! Note that scripts developed for the simulator can be run directly on the Robotarium.  Furthermore, the simulator has been designed to closely approximate the physical behavior of the Robotarium’s agents.</p>
+<ol>
+  <li>Download the Robotarium’s <a href="https://github.com/robotarium/robotarium-matlab-simulator">simulator</a></li>
+  <li>Write and verify your script in the simulator</li>
+  <li>Contact either <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#109;&#097;&#103;&#110;&#117;&#115;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Magnus Egerstedt</a> or <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#097;&#110;&#105;&#101;&#108;&#046;&#112;&#105;&#099;&#107;&#101;&#109;&#064;&#103;&#097;&#116;&#101;&#099;&#104;&#046;&#101;&#100;&#117;">Daniel Pickem</a> for script submission instructions</li>
+</ol>
 
-<h1 id="the-consensus-protocol-in-code">The consensus protocol in code</h1>
-
-<p>Below is an pseudo-example consensus algorithm using the Robotarium’s MATLAB API.</p>
-
-<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">% Initialize the Robotarium</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">Robotarium</span><span class="p">();</span>
-<span class="n">N</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getAvailableAgents</span><span class="p">();</span>
-<span class="n">r</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
-
-<span class="c1">% Create a cyclic graph Laplacian using the built-in graph utilities</span>
-<span class="n">L</span> <span class="o">=</span> <span class="n">cycleGL</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
-
-<span class="k">for</span> <span class="nb">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
-
-    <span class="c1">% Initialize velocity to zero for each agent.  This allows us to sum</span>
-    <span class="c1">% over agent i's neighbors</span>
-    <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
-
-    <span class="c1">% Get the topological neighbors of agent i based on the graph</span>
-    <span class="c1">% Laplacian L</span>
-    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">getTopNeighbors</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
-
-    <span class="c1">% Iterate through agent i's neighbors</span>
-    <span class="k">for</span> <span class="nb">j</span> <span class="o">=</span> <span class="n">neighbors</span>
-
-        <span class="c1">%%% CONSENSUS %%%</span>
-
-        <span class="c1">% For each neighbor, calculate appropriate consensus term and</span>
-        <span class="c1">%add it to the total velocity</span>
-        <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">dx</span><span class="p">(:,</span> <span class="nb">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="nb">i</span><span class="p">));</span>
-
-        <span class="c1">%%% END CONSENSUS %%%</span>
-    <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="n">r</span><span class="o">.</span><span class="n">setVelocities</span><span class="p">(</span><span class="n">dx</span><span class="p">);</span></code></pre></figure>
-
+<p>Note that any script or algorithm developed for the simulator <strong><em>can be run directly on the Robotarium!</em></strong>  Furthermore, the simulator has been designed to closely approximate the physical behavior of the Robotarium’s agents.</p>
 
   </article>
 
