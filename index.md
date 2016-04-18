@@ -6,7 +6,7 @@ permalink: /
 
 # What is the Robotarium?
 
-The Robotarium project aims to provide an online, swarm robotics platform that remains freely accessible to anyone.  Currently, Robotics research requires massive investments to competitively participate. However, we believe that anyone with new, amazing ideas should be able to see their algorithms deployed on real robots, rather than purely simulated. In order to make this vision possible, we are creating a remote-access, robotics lab where anyone can upload and test their ideas on real hardware.
+The Robotarium project provides an online, swarm robotics platform that remains freely accessible to anyone.  Currently, Robotics research requires massive investments to competitively participate. However, we believe that anyone with new, amazing ideas should be able to see their algorithms deployed on real robots, rather than purely simulated. In order to make this vision possible, we are creating a remote-access, robotics lab where anyone can upload and test their ideas on real hardware.
 
 <div style="margin: 0px auto; text-align: center;">
   <iframe width="560" height="315" src="https://www.youtube.com/embed/1cOafOc1bIk" frameborder="0" allowfullscreen></iframe>
