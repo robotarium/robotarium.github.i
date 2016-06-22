@@ -247,3 +247,20 @@
         }
     }
 }
+
+/**
+ * Alert boxes and highlights
+ */
+.note {
+  margin: 30px 0;
+  margin-left: 0px;
+  padding: 20px 20px 24px;
+  padding-left: 70px;
+  position: relative;
+  background-color: #FFBB41;
+  border-style: solid;
+  border-width: 3px;
+  border-color: black;
+  font-size: 22px;
+  text-align: center;
+}
